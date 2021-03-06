@@ -196,5 +196,27 @@ ggplot(swim_data_2) + geom_segment(aes(x=province, xend=province, y=start, yend=
   coord_flip() + labs(x = "Province", y = "Epiweeks (2010-2020)", color = "Stability") + 
   theme_bw() + scale_colour_manual(values = c("#FD9A6AFF", "#AB337CFF"))
 # this sorts out my bars, now I need to outbreaks 
-
+# So I transformed all my outbreak data for each province to numbers: 
+swim_outbreak
+# A tibble: 256 x 2
+province outbreak
+<chr>       <dbl>
+  1 Bas-Uele      372
+2 Equateur       79
+3 Equateur       84
+4 Equateur       86
+5 Equateur       90
+6 Equateur       91
+7 Equateur      101
+8 Equateur      111
+9 Equateur      119
+10 Equateur      124
+# … with 246 more rows
+# then I merged the two dataframes 
+swim_dat_new <- merge(swim_data_2, swim_outbreak, by = "province", all= TRUE)
+# then replot 
+ggplot(swim_dat_new) + geom_segment(aes(x=province, xend=province, y=start, yend=end, color=stability), size = 4) + 
+  coord_flip() + labs(x = "Province", y = "Epiweeks (2010-2020)", color = "Stability") + theme_bw() + 
+  scale_colour_manual(values = c("#FD9A6AFF", "#AB337CFF")) + 
+  geom_point(aes(x=province, y=outbreak), size=2, shape = "triangle")
 
