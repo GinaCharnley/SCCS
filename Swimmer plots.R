@@ -123,4 +123,78 @@ data_bas_uele_2 <- aggregate(data_bas_uele,by = list(outbreak_id = data_bas_uele
 # https://ggplot2.tidyverse.org/reference/scale_manual.html
 # https://bookdown.org/rdpeng/exdata/plotting-and-color-in-r.html
 
+# so to remake for my full timeseries I had to change the conflict data, as I now needed to for 2010 to 2020 not just the years with outbreaks 
+library(data.table)
+bas_uele <- subset(Conflict, admin1 == "Bas-Uele" & MMWRyear > 2009)
+equateur <- subset(Conflict, admin1 == "Equateur"& MMWRyear > 2009)
+haut_katanga <- subset(Conflict, admin1 == "Haut-Katanga"& MMWRyear > 2009)
+haut_lomani <- subset(Conflict, admin1 == "Haut-Lomami"& MMWRyear > 2009)
+ituri<- subset(Conflict, admin1 == "Ituri"& MMWRyear > 2009)
+kasai<- subset(Conflict, admin1 == "Kasaï"& MMWRyear > 2009)
+kasai_oriental <- subset(Conflict, admin1 == "Kasaï-Oriental"& MMWRyear > 2009)
+kinshasa <- subset(Conflict, admin1 == "Kinshasa"& MMWRyear > 2009)
+kongo_central <- subset(Conflict, admin1 == "Kongo-Central"& MMWRyear > 2009)
+kwilu <- subset(Conflict, admin1 == "Kwilu"& MMWRyear > 2009)
+lualaba <- subset(Conflict, admin1 == "Lualaba"& MMWRyear > 2009)
+mai_ndombe<- subset(Conflict, admin1 == "Maï-Ndombe"& MMWRyear > 2009)
+maniema <- subset(Conflict, admin1 == "Maniema"& MMWRyear > 2009)
+mongala <- subset(Conflict, admin1 == "Mongala"& MMWRyear > 2009)
+nord_kivu <- subset(Conflict, admin1 == "Nord-Kivu"& MMWRyear > 2009)
+nord_ubangi <- subset(Conflict, admin1 == "Nord-Ubangi"& MMWRyear > 2009)
+sud_kivu <- subset(Conflict, admin1 == "Sud-Kivu"& MMWRyear > 2009)
+tanganyika <- subset(Conflict, admin1 == "Tanganyika"& MMWRyear > 2009)
+tshopo <- subset(Conflict, admin1 == "Tshopo"& MMWRyear > 2009)
+
+conflict2 <- rbind(bas_uele, equateur)
+conflict2 <- rbind(conflict2, haut_katanga)
+conflict2 <- rbind(conflict2, haut_lomani)
+conflict2 <- rbind(conflict2, ituri)
+conflict2 <- rbind(conflict2, kasai)
+conflict2 <- rbind(conflict2, kasai_oriental)
+conflict2 <- rbind(conflict2, kinshasa)
+conflict2 <- rbind(conflict2, kongo_central)
+conflict2 <- rbind(conflict2, kwilu)
+conflict2 <- rbind(conflict2, lualaba)
+conflict2 <- rbind(conflict2, mai_ndombe)
+conflict2 <- rbind(conflict2, maniema)
+conflict2 <- rbind(conflict2, mongala)
+conflict2 <- rbind(conflict2, nord_kivu)
+conflict2 <- rbind(conflict2, nord_ubangi)
+conflict2 <- rbind(conflict2, sud_kivu)
+conflict2 <- rbind(conflict2, tanganyika)
+conflict2 <- rbind(conflict2, tshopo)
+
+conflict2 <- conflict2 %>% distinct()
+conflict_events <- conflict2 %>% group_by(admin1) %>% tally()
+conflict3 <- merge(conflict2, conflict_events, by = "admin1", all = TRUE)
+names(conflict3)[5]<-paste("events_total")
+write.csv(conflict3, "conflict3.csv")
+
+# I have had a lot of problems making swimmer plots using the swimmer_plot() function
+# So I am making my own on the basis of a lollipop plot 
+library(scales) # also discovered this package, which can generate you some codes for specific colours 
+show_col(viridis_pal(option = "magma")(20))
+# It isn't happy with 2010_1, so I have converted them all back to numbers, using continuous epiweeks for 2010-2020 
+# So my data looks like this: 
+swim_data_2
+# A tibble: 53 x 4
+province     stability start   end
+<chr>        <chr>     <dbl> <dbl>
+  1 Bas-Uele     Conflict      1   536
+2 Bas-Uele     Peace       537   567
+3 Equateur     Peace         1    11
+4 Equateur     Conflict     13   541
+5 Equateur     Peace       542   567
+6 Haut-Katanga Peace         1    46
+7 Haut-Katanga Conflict     47   541
+8 Haut-Katanga Peace       542   567
+9 Haut-Lomami  Peace         1    97
+10 Haut-Lomami  Conflict     98   540
+# … with 43 more rows
+# for the swimplot 
+ggplot(swim_data_2) + geom_segment(aes(x=province, xend=province, y=start, yend=end, color=stability), size = 4) + 
+  coord_flip() + labs(x = "Province", y = "Epiweeks (2010-2020)", color = "Stability") + 
+  theme_bw() + scale_colour_manual(values = c("#FD9A6AFF", "#AB337CFF"))
+# this sorts out my bars, now I need to outbreaks 
+
 
