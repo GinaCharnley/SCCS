@@ -219,4 +219,13 @@ ggplot(swim_dat_new) + geom_segment(aes(x=province, xend=province, y=start, yend
   coord_flip() + labs(x = "Province", y = "Epiweeks (2010-2020)", color = "Stability") + theme_bw() + 
   scale_colour_manual(values = c("#FD9A6AFF", "#AB337CFF")) + 
   geom_point(aes(x=province, y=outbreak), size=2, shape = "triangle")
+# Because now my epiweeks are a little confusing to interpret on the figure, I have created some of my own labels 
+pos <- as.numeric(c(1,100,200,300,400,500,570))
+labels <- as.character(c("2010_1", "2011_48", "2012_44", "2015_40", "2017_36", "2019_32", "2020_41"))
+ggplot(swim_dat_new) + geom_segment(aes(x=province, xend=province, y=start, yend=end, color=stability), size = 4) + 
+  coord_flip() + labs(x = "Province", y = "Epiweeks (2010-2020)", color = "Stability") + theme_bw() + 
+  scale_colour_manual(values = c("#FD9A6AFF", "#AB337CFF")) + 
+  geom_point(aes(x=province, y=outbreak), size=2, shape = "triangle") + 
+  scale_y_discrete(limits = pos, labels = labels) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5))
 
