@@ -2,6 +2,7 @@
 # This is to create my exposure periods 
 # Data imported is the conflict datasets, including province, epiweek and epiyear
 
+library(dplyr)
 conflict_data <- conflict_data %>% distinct()
 conflict_data <-  conflict_data %>%
   mutate(years_from_start = MMWRyear - min(MMWRyear)) %>%
