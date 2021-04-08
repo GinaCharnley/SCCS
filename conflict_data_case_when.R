@@ -25,10 +25,11 @@ df1 <- conflict_data %>% group_by(admin1) %>%
 df1 <- df1 %>% group_by(admin1) %>% 
   mutate(exp_end = case_when(
   lead(conflict_gap) >= gap ~ years_week, 
-  is.na(lead(conflict_gap)) ~ years_week)) %>% 
+  is.na(lead(conflict_gap)) ~ years_week,
+  all(conflict_gap<gap) ~ max(years_week))) %>% 
   arrange(admin1)
 
-df1 <- df1 %>% group_by(admin1, exp_start, exp_end) %>% distinct()
+df1 <- df1 %>% group_by(admin1, exp_start, exp_end) %>% distinct() %>% ungroup()
 
 df2 <- df1 %>% select(admin1, exp_start) %>% distinct() 
 df2 <- df2 %>% filter(!is.na(exp_start)) 
