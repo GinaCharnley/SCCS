@@ -4,16 +4,16 @@
 library(dplyr)
 library(gnm)
 library(survival)
+library(readxl)
 ## For the original dataframe with one exposure period (exp = first/last conflict reports)
 ## This is based of the ox.txt and oxford.r example 
 ## So I first get my data looking like theirs 
 original <- read_excel("Data/sccs_new.xlsx", sheet = "original")
+
 original$province <- NULL
-names(original)[1]<-paste("start")
-names(original)[2]<-paste("end")
-names(original)[3]<-paste("start1")
-names(original)[4]<-paste("end1")
-names(original)[5]<-paste("eventday")
+
+names(original) <- c("start", "end", "start1", "end1", "eventday")
+
 indiv <- seq(1,298,1)
 original <- cbind(original, indiv) # create an id number for each outbreak
 original$exday <- original$start1 # exposure day (exday) is first day of exposure period
@@ -62,10 +62,15 @@ original_gnm <- gnm(event ~ exgr + offset(loginterval), data = chopdat,
             family = poisson(link = "log"),
             eliminate = indiv) # corresponds to strata(indiv)
 summary(original_gnm)
+AIC(original_gnm)
+BIC(original_gnm)
 
 ## Fit model using survival
 original_clogit <- clogit(event ~ exgr + strata(indiv) + offset(loginterval), data = chopdat)
 summary(original_clogit)
+AIC(original_clogit) # AIC is a lot better though
+BIC(original_clogit)
+
 ## I refer to read-out to gnm better, so I use that from here 
 
 ## Alternatively, 
