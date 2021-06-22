@@ -12,6 +12,7 @@ df_date <- data.frame(date = date1, year = as.numeric(format(date1, format = "%Y
                       day = as.numeric(format(date1, format = "%d")))
 cod_conflict <- cbind(cod_conflict, df_date)
 cod_conflict <- cod_conflict %>% group_by(month, year) %>% tally()
+cod_conflict <- cod_conflict[with(cod_conflict, order(year, month)), ]
 cod_conflict$month_cont <- seq(1,280, 1)
 cod_conflict$log.n <- log10(cod_conflict$n)
 lin.mod <- lm(log.n~month_cont, data = cod_conflict)
